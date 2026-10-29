@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SkillNest | Learning Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="app">
+    <!-- Sidebar navigation -->
+    <aside class="sidebar" id="sidebar" aria-label="Primary">
+      <div class="brand">SkillNest</div>
+      <nav class="nav">
+        <button class="nav-btn active" data-view="dashboard">Dashboard</button>
+        <button class="nav-btn" data-view="courses">Course Progress</button>
+        <button class="nav-btn" data-view="resources">Study Resources</button>
+        <button class="nav-btn" data-view="quizzes">Quizzes and Practice</button>
+        <button class="nav-btn" data-view="notes">My Digital Notes</button>
+      </nav>
+    </aside>
+    <div class="scrim" id="scrim" hidden></div>
+
+    <div class="main-col">
+      <!-- Top bar -->
+      <header class="topbar">
+        <button id="menuToggle" class="icon-btn menu-btn" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar">Menu</button>
+        <h1 id="pageTitle">Dashboard</h1>
+        <div class="search">
+          <label class="sr-only" for="globalSearch">Search lessons, resources and notes</label>
+          <input id="globalSearch" type="search" placeholder="Search lessons, resources, notes" autocomplete="off">
+          <div id="searchResults" class="search-results" hidden></div>
+        </div>
+        <button id="themeToggle" class="icon-btn" aria-label="Switch to light theme">Theme</button>
+        <div class="profile"><span class="avatar" aria-hidden="true">S</span><span class="profile-name">Student</span></div>
+      </header>
+
+      <main id="main" tabindex="-1">
+        <!-- DASHBOARD -->
+        <section id="view-dashboard" class="view" data-title="Dashboard">
+          <div class="stats-grid" id="statsGrid"></div>
+          <div class="grid-2">
+            <article class="card">
+              <h2>Learning activity</h2>
+              <p class="muted">Last 20 weeks. Each square is one day.</p>
+              <div class="heatmap" id="heatmap" role="img" aria-label="Learning activity heatmap"></div>
+              <div class="legend"><span>Less</span><i class="cell l0"></i><i class="cell l1"></i><i class="cell l2"></i><i class="cell l3"></i><i class="cell l4"></i><span>More</span></div>
+            </article>
+            <article class="card">
+              <h2>Today</h2>
+              <p id="todayStatus" class="today-pill"></p>
+              <div id="nextLesson"></div>
+              <form id="sessionForm" class="inline-form">
+                <label for="sessionMinutes">Log a study session (minutes)</label>
+                <div class="row">
+                  <input id="sessionMinutes" type="number" min="1" max="600" value="25" required>
+                  <button class="btn" type="submit">Log session</button>
+                </div>
+              </form>
+            </article>
+          </div>
+          <div class="grid-2">
+            <article class="card"><h2>Course progress</h2><div id="dashCourses"></div></article>
+            <article class="card"><h2>Recent activity</h2><ul id="recentActivity" class="activity"></ul></article>
+          </div>
+          <article class="card" id="insightsCard">
+            <h2>Learning insights</h2>
+            <div id="insights"></div>
+          </article>
+        </section>
+
+        <!-- COURSE PROGRESS -->
+        <section id="view-courses" class="view" data-title="Course Progress" hidden>
+          <article class="card" id="overallProgress"></article>
+          <div id="courseList" class="course-list"></div>
+        </section>
+
+        <!-- LESSON DETAIL (opened from a lesson; not in the sidebar) -->
+        <section id="view-lesson" class="view" data-title="Lesson" hidden>
+          <button class="btn ghost" id="lessonBack" type="button">Back to course progress</button>
+          <article class="card" id="lessonDetail"></article>
+        </section>
+
+        <!-- STUDY RESOURCES -->
+        <section id="view-resources" class="view" data-title="Study Resources" hidden>
+          <div class="toolbar">
+            <div class="tabs" id="resourceTabs" role="group" aria-label="Resource category">
+              <button class="tab active" data-cat="all" aria-pressed="true">All</button>
+              <button class="tab" data-cat="notes" aria-pressed="false">Study Notes</button>
+              <button class="tab" data-cat="assignments" aria-pressed="false">Assignments</button>
+              <button class="tab" data-cat="materials" aria-pressed="false">Learning Materials</button>
+              <button class="tab" data-cat="additional" aria-pressed="false">Additional Resources</button>
+            </div>
+            <label class="sr-only" for="resourceCourse">Filter by course</label>
+            <select id="resourceCourse"></select>
+            <label class="sr-only" for="resourceSearch">Search resources</label>
+            <input id="resourceSearch" type="search" placeholder="Search resources">
+          </div>
+          <div id="resourceList" class="resource-list"></div>
+        </section>
+
+        <!-- QUIZZES -->
+        <section id="view-quizzes" class="view" data-title="Quizzes and Practice" hidden>
+          <div id="quizArea"></div>
+          <article class="card"><h2>Quiz history</h2><div id="quizHistory"></div></article>
+        </section>
+
+        <!-- NOTES -->
+        <section id="view-notes" class="view" data-title="My Digital Notes" hidden>
+          <div class="notes-layout">
+            <aside class="card notes-side">
+              <div class="row">
+                <button id="newNoteBtn" class="btn" type="button">New note</button>
+              </div>
+              <label class="sr-only" for="noteSearch">Search notes</label>
+              <input id="noteSearch" type="search" placeholder="Search notes">
+              <ul id="noteList" class="note-list"></ul>
+            </aside>
+            <article class="card note-editor" id="noteEditor">
+              <label class="sr-only" for="noteTitle">Note title</label>
+              <input id="noteTitle" class="note-title" type="text" placeholder="Note title" maxlength="120">
+              <label class="sr-only" for="noteCourse">Course</label>
+              <select id="noteCourse"></select>
+              <div class="toolbar-rich" role="toolbar" aria-label="Formatting">
+                <button type="button" class="btn ghost" data-cmd="bold" aria-label="Bold"><b>B</b></button>
+                <button type="button" class="btn ghost" data-cmd="italic" aria-label="Italic"><i>I</i></button>
+                <button type="button" class="btn ghost" data-cmd="insertUnorderedList">List</button>
+                <button type="button" class="btn ghost" data-cmd="formatBlock" data-arg="h3">Heading</button>
+                <button type="button" class="btn ghost" data-cmd="formatBlock" data-arg="p">Text</button>
+              </div>
+              <div id="noteBody" class="note-body" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Note content"></div>
+              <div class="row">
+                <button id="saveNoteBtn" class="btn" type="button">Save note</button>
+                <button id="deleteNoteBtn" class="btn ghost" type="button">Delete note</button>
+                <span id="noteStatus" class="muted" role="status"></span>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <dialog id="resourceDialog" aria-labelledby="dlgTitle">
+    <h2 id="dlgTitle"></h2>
+    <div id="dlgBody" class="dlg-body"></div>
+    <form method="dialog"><button class="btn">Close</button></form>
+  </dialog>
+</body>
+</html>
